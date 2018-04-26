@@ -219,13 +219,13 @@ public:
 	void printAllRegister();
 	
     //Added by shirish
-    void ADXL345::enableFIFOMode();
-    void ADXL345::disableFIFOMode();
-    void ADXL345::writeWatermarkSamples(byte s);
-    void ADXL345::clearAllInterrupts();
-    void ADXL345::waterMarkINT(bool status);
-    byte ADXL345::getFIFOcounts();
-    void ADXL345::setMeasureMode(bool t);
+    void enableFIFOMode();
+    void disableFIFOMode();
+    void writeWatermarkSamples(byte s);
+    void disableAllInterrupts();
+    void waterMarkINT(bool status);
+    byte getFIFOcounts();
+    void setMeasureMode(bool t);
     
 private:
 	void writeTo(byte address, byte val);
