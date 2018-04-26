@@ -197,7 +197,7 @@ public:
 	void setInterruptMapping(byte interruptBit, bool interruptPin);
 	bool isInterruptEnabled(byte interruptBit);
 	void setInterrupt(byte interruptBit, bool state);
-	void setImportantInterruptMapping(int single_tap, int double_tap, int free_fall, int activity, int inactivity);
+	void setImportantInterruptMapping(int single_tap, int double_tap, int free_fall, int activity, int inactivity, int watermark);
 	void InactivityINT(bool status);
 	void ActivityINT(bool status);
 	void FreeFallINT(bool status);
@@ -218,6 +218,15 @@ public:
 	void setJustifyBit(bool justifyBit);
 	void printAllRegister();
 	
+    //Added by shirish
+    void ADXL345::enableFIFOMode();
+    void ADXL345::disableFIFOMode();
+    void ADXL345::writeWatermarkSamples(byte s);
+    void ADXL345::clearAllInterrupts();
+    void ADXL345::waterMarkINT(bool status);
+    byte ADXL345::getFIFOcounts();
+    void ADXL345::setMeasureMode(bool t);
+    
 private:
 	void writeTo(byte address, byte val);
 	void writeToI2C(byte address, byte val);
