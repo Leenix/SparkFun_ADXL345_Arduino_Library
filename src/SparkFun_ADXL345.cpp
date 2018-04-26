@@ -5,7 +5,8 @@ SparkFun_ADXL345.cpp
 E.Robert @ SparkFun Electronics
 Created: Jul 13, 2016
 Updated: Sep 06, 2016
-
+Shirish Jadav
+Updated: Apr 26,2018
 Modified Bildr ADXL345 Source File @ http://code.bildr.org/download/959.zip
 to support both I2C and SPI Communication
 
@@ -811,11 +812,10 @@ void ADXL345::writeWatermarkSamples(byte s)
         
         _b= _b |  s; //only writing samples bit
         writeTo(ADXL345_FIFO_CTL,_b);
-        return _b;
     }
 }
 
-void ADXL345::clearAllInterrupts()
+void ADXL345::disableAllInterrupts()
 {
     writeTo(ADXL345_INT_ENABLE, 0 );
 }
