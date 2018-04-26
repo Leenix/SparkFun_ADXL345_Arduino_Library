@@ -697,7 +697,7 @@ void ADXL345::setInterruptMapping(byte interruptBit, bool interruptPin) {
 	setRegisterBit(ADXL345_INT_MAP, interruptBit, interruptPin);
 }
 
-void ADXL345::setImportantInterruptMapping(int single_tap, int double_tap, int free_fall, int activity, int inactivity) {
+void ADXL345::setImportantInterruptMapping(int single_tap, int double_tap, int free_fall, int activity, int inactivity, int watermark) {
 	if(single_tap == 1) {
 		setInterruptMapping( ADXL345_INT_SINGLE_TAP_BIT,   ADXL345_INT1_PIN );}
 	else if(single_tap == 2) {
@@ -722,6 +722,11 @@ void ADXL345::setImportantInterruptMapping(int single_tap, int double_tap, int f
 		setInterruptMapping( ADXL345_INT_INACTIVITY_BIT,   ADXL345_INT1_PIN );}
 	else if(inactivity == 2) {
 		setInterruptMapping( ADXL345_INT_INACTIVITY_BIT,   ADXL345_INT2_PIN );}
+   
+    if(watermark == 1) {
+        setInterruptMapping( ADXL345_INT_WATERMARK_BIT,   ADXL345_INT1_PIN );}
+    else if(watermark == 2) {
+        setInterruptMapping( ADXL345_INT_WATERMARK_BIT,   ADXL345_INT2_PIN );}
 }
 
 bool ADXL345::isInterruptEnabled(byte interruptBit) {
@@ -772,6 +777,67 @@ void ADXL345::InactivityINT(bool status) {
 		setInterrupt( ADXL345_INT_INACTIVITY_BIT, 0);
 	}
 }
+void ADXL345::waterMarkINT(bool status) {
+    if(status) {
+        setInterrupt( ADXL345_INT_WATERMARK_BIT, 1);
+    }
+    else {
+        setInterrupt( ADXL345_INT_WATERMARK_BIT, 0);
+    }
+}
+//FIFO mode Functions
+void ADXL345::enableFIFOMode()
+{
+    byte _b;
+    readFrom(ADXL345_FIFO_CTL,1, &_b);
+    
+    _b |=(1<<6);
+    writeTo(ADXL345_FIFO_CTL,_b);
+}
+void ADXL345::disableFIFOMode()
+{
+    byte _b;
+    readFrom(ADXL345_FIFO_CTL,1, &_b);
+    
+    _b &= ~(1 << 6);
+    writeTo(ADXL345_FIFO_CTL,_b);
+}
+
+void ADXL345::writeWatermarkSamples(byte s)
+{
+    byte _b;
+    if(s>0 && s<31){
+        readFrom(ADXL345_FIFO_CTL,1, &_b);
+        
+        _b= _b |  s; //only writing samples bit
+        writeTo(ADXL345_FIFO_CTL,_b);
+        return _b;
+    }
+}
+
+void ADXL345::clearAllInterrupts()
+{
+    writeTo(ADXL345_INT_ENABLE, 0 );
+}
+
+byte ADXL345::getFIFOcounts()
+{
+    byte _b;
+    readFrom(ADXL345_FIFO_STATUS,1, &_b);
+    //_b = 0x1f & _b;
+    return _b;
+}
+void ADXL345::setMeasureMode(bool t)
+{
+    byte _b=0;
+    readFrom(ADXL345_POWER_CTL, 1, &_b);
+    if(t)
+        _b |=  (0x1<<3);
+    else
+        _b &= ~(0x1<< 3);
+    writeTo(ADXL345_POWER_CTL, _b);
+}
+
 
 void ADXL345::setRegisterBit(byte regAdress, int bitPos, bool state) {
 	byte _b;
@@ -784,13 +850,11 @@ void ADXL345::setRegisterBit(byte regAdress, int bitPos, bool state) {
 	}
 	writeTo(regAdress, _b);  
 }
-
 bool ADXL345::getRegisterBit(byte regAdress, int bitPos) {
 	byte _b;
 	readFrom(regAdress, 1, &_b);
 	return ((_b >> bitPos) & 1);
 }
-
 /********************************************************************/
 /*                                                                  */
 // Print Register Values to Serial Output =
