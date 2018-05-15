@@ -80,7 +80,6 @@ void setupFIFOMode()
 {
   adxl.disableAllInterrupts();                          //disable all Interrupts
   adxl.setRate(200);                                    //set output data Rate
-  adxl.set_bw(100);                                     //set bandwidth
   adxl.enableFIFOMode();                               //set ADXL345 in FIFO mode
   adxl.writeWatermarkSamples(20);                      //number of Samples for Watermark 
   adxl.setImportantInterruptMapping(1, 1, 1, 1, 1, 1); //map Interrupt to INT0 INT1
